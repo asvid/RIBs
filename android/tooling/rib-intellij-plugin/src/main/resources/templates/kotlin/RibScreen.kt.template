@@ -1,0 +1,22 @@
+package ${package_name};
+
+import android.view.View
+import android.view.ViewGroup
+import com.uber.rib.core.screenstack.ViewProvider
+
+/**
+ * Screen class for {@link ${rib_name}View}.
+ */
+class {rib_name}Screen(private val builder: {rib_name}Builder) : ViewProvider() {
+
+    var router: {rib_name}Router? = null
+
+    override fun buildView(parentView: ViewGroup): View {
+        router = builder.build(parentView)
+        return router!!.view
+    }
+
+    override fun doOnViewRemoved() {
+        router = null
+    }
+}

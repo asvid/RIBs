@@ -34,6 +34,7 @@ public class GenerateRibDialog extends DialogWrapper {
   private JTextField ribNameTextField;
   private JCheckBox createPresenterAndViewCheckBox;
   private JCheckBox createKotlinCode;
+  private JCheckBox createScreenCheckBox;
 
   public GenerateRibDialog(final Listener listener) {
     super(null);
@@ -42,6 +43,10 @@ public class GenerateRibDialog extends DialogWrapper {
 
     createPresenterAndViewCheckBox.setSelected(true);
     createKotlinCode.setSelected(true);
+    createScreenCheckBox.setSelected(false);
+    createPresenterAndViewCheckBox.addItemListener(itemEvent -> {
+      createScreenCheckBox.setEnabled(createPresenterAndViewCheckBox.isSelected());
+    });
   }
 
   @Nullable
@@ -57,7 +62,8 @@ public class GenerateRibDialog extends DialogWrapper {
     this.listener.onGenerateClicked(
         ribNameTextField.getText(),
         createPresenterAndViewCheckBox.isSelected(),
-        createKotlinCode.isSelected());
+        createKotlinCode.isSelected(),
+            createScreenCheckBox.isSelected());
   }
 
   /**
@@ -67,11 +73,11 @@ public class GenerateRibDialog extends DialogWrapper {
 
     /**
      * Called when the user clicks OK on the generate dialog.
-     *
-     * @param ribName                name for new rib.
+     *  @param ribName                name for new rib.
      * @param createPresenterAndView {@code true} when a presenter and a corresponding view should
      *                               be created, {@code false} otherwise.
+     * @param createScreen
      */
-    void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected);
+    void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected, boolean createScreen);
   }
 }

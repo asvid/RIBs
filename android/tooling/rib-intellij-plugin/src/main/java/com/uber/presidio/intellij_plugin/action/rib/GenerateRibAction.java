@@ -15,6 +15,7 @@
  */
 package com.uber.presidio.intellij_plugin.action.rib;
 
+import android.support.annotation.NonNull;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.uber.presidio.intellij_plugin.generator.GeneratorPair;
 
@@ -24,19 +25,27 @@ import com.uber.presidio.intellij_plugin.generator.GeneratorPair;
  */
 public class GenerateRibAction extends GenerateAction implements GenerateRibDialog.Listener {
 
-  @Override
-  public void actionPerformed(AnActionEvent anActionEvent) {
-    GenerateRibDialog dialog = new GenerateRibDialog(this);
-    dialog.show();
-  }
+    @Override
+    public void actionPerformed(AnActionEvent anActionEvent) {
+        GenerateRibDialog dialog = new GenerateRibDialog(this);
+        dialog.show();
+    }
 
-  @Override
-  public void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected) {
-    final GeneratorPair generators =
-            createPresenterAndView
-                    ? Generators.getGeneratorsForRibWithPresenterAndView(getPackageName(), ribName, isKotlinSelected)
-                    : Generators.getGeneratorsForRibWithoutPresenterAndView(
-                    getPackageName(), ribName, isKotlinSelected);
-    generate(generators.getMainSourceSetGenerators(), generators.getTestSourceSetGenerators());
-  }
+    @Override
+    public void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected, boolean createScreen) {
+        final GeneratorPair generators = getGenerators(ribName, createPresenterAndView, isKotlinSelected, createScreen);
+        generate(generators.getMainSourceSetGenerators(), generators.getTestSourceSetGenerators());
+    }
+
+    @NonNull
+    private GeneratorPair getGenerators(String ribName, boolean createPresenterAndView, boolean isKotlinSelected, boolean createScreen) {
+        if (createPresenterAndView && createScreen) {
+            return Generators.getGeneratorsForRibWithoutPresenterAndViewAndScreen(getPackageName(), ribName, isKotlinSelected);
+        }
+        if (createPresenterAndView) {
+            return Generators.getGeneratorsForRibWithoutPresenterAndView(getPackageName(), ribName, isKotlinSelected);
+        } else {
+            return Generators.getGeneratorsForRibWithoutPresenterAndView(getPackageName(), ribName, isKotlinSelected);
+        }
+    }
 }
